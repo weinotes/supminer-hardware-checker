@@ -46,7 +46,7 @@ SupMiner Hardware Checker 是一款专业的硬件检测工具，专为 [supmine
 
 ```bash
 # 1. 下载脚本
-curl -O https://raw.githubusercontent.com/你的用户名/supminer-hardware-checker/main/hardware_checker.py
+curl -O https://raw.githubusercontent.com/weinotes/supminer-hardware-checker/main/hardware_checker.py
 
 # 2. 运行检测（基础功能）
 python3 hardware_checker.py
@@ -60,7 +60,7 @@ python3 hardware_checker.py
 
 ```bash
 # 1. 克隆项目
-git clone https://github.com/你的用户名/supminer-hardware-checker.git
+git clone https://github.com/weinotes/supminer-hardware-checker.git
 cd supminer-hardware-checker
 
 # 2. 安装依赖
@@ -102,7 +102,7 @@ python3 hardware_checker.py
 SupMiner.net 硬件检测报告
 ============================================================
 
-检测时间: 2024-12-07 15:30:00
+检测时间: 2025-12-07 15:30:00
 
 【系统信息】
 操作系统: Linux
@@ -246,7 +246,7 @@ SupMiner Hardware Checker is a professional hardware detection tool designed for
 
 ```bash
 # Download and run
-curl -O https://raw.githubusercontent.com/your-username/supminer-hardware-checker/main/hardware_checker.py
+curl -O https://raw.githubusercontent.com/weinotes/supminer-hardware-checker/main/hardware_checker.py
 python3 hardware_checker.py
 
 # For detailed information, install dependencies
