@@ -75,8 +75,35 @@ python hardware_checker.py
 - Python 3.6+
 - psutil (可选，用于获取详细硬件信息)
 
+#### 安装 psutil
+
+**macOS / Windows:**
 ```bash
 pip install psutil
+# 或
+pip3 install psutil
+```
+
+**Ubuntu/Debian 22.04+ (推荐方法):**
+```bash
+# 方法 1: 使用系统包管理器（最简单）
+sudo apt update
+sudo apt install python3-psutil
+
+# 方法 2: 安装到用户目录
+pip3 install --user psutil
+
+# 方法 3: 使用虚拟环境
+python3 -m venv venv
+source venv/bin/activate
+pip install psutil
+```
+
+**其他 Linux 发行版:**
+```bash
+pip3 install psutil
+# 如果遇到 externally-managed-environment 错误，使用:
+pip3 install --user psutil
 ```
 
 ### 💻 使用示例
@@ -102,7 +129,7 @@ python3 hardware_checker.py
 SupMiner.net 硬件检测报告
 ============================================================
 
-检测时间: 2025-12-07 15:30:00
+检测时间: 2024-12-07 15:30:00
 
 【系统信息】
 操作系统: Linux
