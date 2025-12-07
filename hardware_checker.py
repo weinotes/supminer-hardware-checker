@@ -1,354 +1,361 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-SupMiner Hardware Checker
-硬件检测工具 - 判断适合GPU还是CPU挖矿
-
-Website: https://supminer.net
+SupMiner 硬件检测工具 - 主流版本
+自动检测硬件配置并推荐主流挖矿项目
+支持的主流项目：BTC, LTC, DOGE, ETC, RVN, KAS, ERG, XMR
 """
 
 import platform
+import json
 import subprocess
 import sys
-import json
 from datetime import datetime
 
-class HardwareChecker:
+try:
+    import psutil
+except ImportError:
+    print("错误: 缺少 psutil 库")
+    print("\n请先安装依赖:")
+    print("  pip install psutil")
+    print("或:")
+    print("  pip3 install psutil")
+    sys.exit(1)
+
+class HardwareDetector:
     def __init__(self):
-        self.system = platform.system()
-        self.results = {
-            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "system": {},
+        self.system_info = {
+            "detection_time": datetime.now().isoformat(),
+            "os": {},
             "cpu": {},
-            "gpu": [],
             "memory": {},
-            "recommendation": {}
+            "gpu": [],
+            "recommended_projects": []
         }
     
-    def get_system_info(self):
-        """获取系统基本信息"""
-        try:
-            self.results["system"] = {
-                "os": platform.system(),
-                "os_version": platform.version(),
-                "architecture": platform.machine(),
-                "hostname": platform.node()
-            }
-        except Exception as e:
-            print(f"获取系统信息时出错: {e}")
+    def detect_os(self):
+        """检测操作系统信息"""
+        self.system_info["os"] = {
+            "system": platform.system(),
+            "release": platform.release(),
+            "version": platform.version(),
+            "machine": platform.machine(),
+            "processor": platform.processor()
+        }
     
-    def get_cpu_info(self):
-        """获取CPU信息"""
-        try:
-            import psutil
-            
-            cpu_info = {
-                "model": platform.processor(),
-                "physical_cores": psutil.cpu_count(logical=False),
-                "total_cores": psutil.cpu_count(logical=True),
-                "max_frequency": f"{psutil.cpu_freq().max:.2f} MHz" if psutil.cpu_freq() else "N/A",
-                "current_frequency": f"{psutil.cpu_freq().current:.2f} MHz" if psutil.cpu_freq() else "N/A"
-            }
-            
-            # Linux系统获取更详细的CPU信息
-            if self.system == "Linux":
-                try:
-                    with open('/proc/cpuinfo', 'r') as f:
-                        cpuinfo = f.read()
-                        for line in cpuinfo.split('\n'):
-                            if 'model name' in line:
-                                cpu_info["model"] = line.split(':')[1].strip()
-                                break
-                except:
-                    pass
-            
-            self.results["cpu"] = cpu_info
-            
-        except ImportError:
-            print("警告: 未安装 psutil 库，CPU信息可能不完整")
-            self.results["cpu"] = {
-                "model": platform.processor(),
-                "cores": "需要安装 psutil: pip install psutil"
-            }
-        except Exception as e:
-            print(f"获取CPU信息时出错: {e}")
+    def detect_cpu(self):
+        """检测CPU信息"""
+        self.system_info["cpu"] = {
+            "physical_cores": psutil.cpu_count(logical=False),
+            "logical_cores": psutil.cpu_count(logical=True),
+            "max_frequency": psutil.cpu_freq().max if psutil.cpu_freq() else 0,
+            "current_frequency": psutil.cpu_freq().current if psutil.cpu_freq() else 0,
+            "cpu_usage": psutil.cpu_percent(interval=1),
+            "model": platform.processor()
+        }
     
-    def get_gpu_info(self):
-        """获取GPU信息"""
-        gpus = []
-        
-        # 尝试使用 nvidia-smi (NVIDIA GPU)
+    def detect_memory(self):
+        """检测内存信息"""
+        memory = psutil.virtual_memory()
+        self.system_info["memory"] = {
+            "total_gb": round(memory.total / (1024**3), 2),
+            "available_gb": round(memory.available / (1024**3), 2),
+            "used_gb": round(memory.used / (1024**3), 2),
+            "percent": memory.percent
+        }
+    
+    def detect_gpu_nvidia(self):
+        """检测NVIDIA显卡"""
         try:
-            if self.system in ["Linux", "Windows"]:
-                cmd = "nvidia-smi --query-gpu=name,memory.total,driver_version --format=csv,noheader"
-                result = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=5)
+            result = subprocess.run(
+                ['nvidia-smi', '--query-gpu=name,memory.total,driver_version', '--format=csv,noheader'],
+                capture_output=True,
+                text=True,
+                timeout=5
+            )
+            
+            if result.returncode == 0:
+                for line in result.stdout.strip().split('\n'):
+                    if line:
+                        parts = [p.strip() for p in line.split(',')]
+                        if len(parts) >= 3:
+                            self.system_info["gpu"].append({
+                                "vendor": "NVIDIA",
+                                "model": parts[0],
+                                "memory": parts[1],
+                                "driver": parts[2]
+                            })
+        except (FileNotFoundError, subprocess.TimeoutExpired):
+            pass
+    
+    def detect_gpu_amd(self):
+        """检测AMD显卡"""
+        try:
+            if platform.system() == "Linux":
+                result = subprocess.run(
+                    ['lspci'],
+                    capture_output=True,
+                    text=True,
+                    timeout=5
+                )
                 
                 if result.returncode == 0:
-                    for line in result.stdout.strip().split('\n'):
-                        if line:
-                            parts = [p.strip() for p in line.split(',')]
-                            if len(parts) >= 2:
-                                gpus.append({
-                                    "type": "NVIDIA",
-                                    "model": parts[0],
-                                    "memory": parts[1],
-                                    "driver": parts[2] if len(parts) > 2 else "N/A"
-                                })
-        except Exception as e:
-            pass
-        
-        # 尝试检测 AMD GPU (Linux)
-        if self.system == "Linux" and not gpus:
-            try:
-                result = subprocess.run("lspci | grep -i vga", shell=True, capture_output=True, text=True, timeout=5)
-                if result.returncode == 0:
-                    for line in result.stdout.strip().split('\n'):
-                        if 'AMD' in line or 'Radeon' in line:
-                            gpus.append({
-                                "type": "AMD",
-                                "model": line.split(':')[-1].strip(),
-                                "memory": "请使用 rocm-smi 查看详细信息"
-                            })
-            except:
-                pass
-        
-        # 尝试检测集成显卡
-        if not gpus:
-            try:
-                if self.system == "Windows":
-                    result = subprocess.run("wmic path win32_videocontroller get name", 
-                                          shell=True, capture_output=True, text=True, timeout=5)
-                    if result.returncode == 0:
-                        lines = result.stdout.strip().split('\n')[1:]
-                        for line in lines:
-                            if line.strip():
-                                gpus.append({
-                                    "type": "Integrated/Other",
-                                    "model": line.strip(),
-                                    "memory": "N/A"
-                                })
-                elif self.system == "Linux":
-                    result = subprocess.run("lspci | grep -i vga", shell=True, capture_output=True, text=True, timeout=5)
-                    if result.returncode == 0:
-                        for line in result.stdout.strip().split('\n'):
-                            if line.strip():
-                                gpus.append({
-                                    "type": "Integrated/Other",
+                    for line in result.stdout.split('\n'):
+                        if 'VGA' in line or 'Display' in line:
+                            if 'AMD' in line or 'ATI' in line or 'Radeon' in line:
+                                self.system_info["gpu"].append({
+                                    "vendor": "AMD",
                                     "model": line.split(':')[-1].strip(),
-                                    "memory": "N/A"
+                                    "memory": "Unknown",
+                                    "driver": "Unknown"
                                 })
-            except:
-                pass
-        
-        self.results["gpu"] = gpus if gpus else [{"type": "None", "model": "未检测到独立显卡"}]
-    
-    def get_memory_info(self):
-        """获取内存信息"""
-        try:
-            import psutil
-            
-            mem = psutil.virtual_memory()
-            self.results["memory"] = {
-                "total": f"{mem.total / (1024**3):.2f} GB",
-                "available": f"{mem.available / (1024**3):.2f} GB",
-                "percent_used": f"{mem.percent}%"
-            }
-        except ImportError:
-            print("警告: 未安装 psutil 库，内存信息不可用")
-            self.results["memory"] = {"info": "需要安装 psutil: pip install psutil"}
-        except Exception as e:
-            print(f"获取内存信息时出错: {e}")
-    
-    def analyze_and_recommend(self):
-        """分析硬件并给出挖矿建议"""
-        recommendation = {
-            "primary_type": "",
-            "reason": [],
-            "suitable_projects": [],
-            "warnings": []
-        }
-        
-        # 分析GPU
-        has_nvidia = any(gpu.get("type") == "NVIDIA" for gpu in self.results["gpu"])
-        has_amd = any(gpu.get("type") == "AMD" for gpu in self.results["gpu"])
-        has_gpu = has_nvidia or has_amd
-        
-        # 分析CPU
-        cpu_cores = self.results["cpu"].get("physical_cores", 0)
-        total_cores = self.results["cpu"].get("total_cores", 0)
-        
-        # GPU挖矿评估
-        if has_nvidia:
-            recommendation["primary_type"] = "GPU挖矿（优先推荐）"
-            recommendation["reason"].append("✅ 检测到NVIDIA显卡，适合GPU挖矿")
-            recommendation["suitable_projects"].extend([
-                "Qubic (GPU) - 推荐",
-                "Nexa (GPU)",
-                "Nexus (GPU)",
-                "Gauntlet (GPU)"
-            ])
-        
-        if has_amd:
-            if not has_nvidia:
-                recommendation["primary_type"] = "GPU挖矿（AMD）"
-            recommendation["reason"].append("✅ 检测到AMD显卡，可用于GPU挖矿")
-            recommendation["suitable_projects"].append("部分项目支持AMD显卡")
-        
-        # CPU挖矿评估
-        if cpu_cores >= 4:
-            if not has_gpu:
-                recommendation["primary_type"] = "CPU挖矿"
-                recommendation["reason"].append(f"✅ CPU拥有{cpu_cores}个物理核心，适合CPU挖矿")
-            else:
-                recommendation["reason"].append(f"✅ CPU拥有{cpu_cores}个物理核心，可同时进行CPU挖矿")
-            
-            recommendation["suitable_projects"].extend([
-                "Qubic (CPU)",
-                "Ore",
-                "Nexus (CPU)",
-                "Gauntlet (CPU)"
-            ])
-        elif cpu_cores > 0:
-            recommendation["warnings"].append(f"⚠️ CPU仅有{cpu_cores}个物理核心，CPU挖矿效率可能较低")
-        
-        # 如果既没有好的GPU也没有好的CPU
-        if not has_gpu and cpu_cores < 4:
-            recommendation["primary_type"] = "轻量级CPU挖矿"
-            recommendation["reason"].append("⚠️ 硬件配置较低，建议选择轻量级CPU项目")
-            recommendation["suitable_projects"] = ["Ore (轻量级CPU挖矿)"]
-        
-        # 内存检查
-        try:
-            total_mem = float(self.results["memory"].get("total", "0").split()[0])
-            if total_mem < 4:
-                recommendation["warnings"].append("⚠️ 系统内存不足4GB，可能影响挖矿性能")
-            elif total_mem >= 8:
-                recommendation["reason"].append(f"✅ 系统内存充足 ({self.results['memory']['total']})")
-        except:
+        except (FileNotFoundError, subprocess.TimeoutExpired):
             pass
-        
-        # 如果没有设置primary_type
-        if not recommendation["primary_type"]:
-            recommendation["primary_type"] = "需要升级硬件"
-            recommendation["warnings"].append("❌ 当前硬件配置不适合挖矿")
-        
-        self.results["recommendation"] = recommendation
     
-    def print_results(self):
-        """打印检测结果"""
-        print("\n" + "="*60)
-        print("SupMiner.net 硬件检测报告")
-        print("="*60)
+    def detect_gpu(self):
+        """检测GPU信息"""
+        self.detect_gpu_nvidia()
+        self.detect_gpu_amd()
         
-        print(f"\n检测时间: {self.results['timestamp']}")
-        
-        print("\n【系统信息】")
-        print(f"操作系统: {self.results['system'].get('os', 'N/A')}")
-        print(f"系统版本: {self.results['system'].get('os_version', 'N/A')}")
-        print(f"架构: {self.results['system'].get('architecture', 'N/A')}")
-        
-        print("\n【CPU信息】")
-        cpu = self.results['cpu']
-        print(f"型号: {cpu.get('model', 'N/A')}")
-        print(f"物理核心: {cpu.get('physical_cores', 'N/A')}")
-        print(f"逻辑核心: {cpu.get('total_cores', 'N/A')}")
-        if 'max_frequency' in cpu:
-            print(f"最大频率: {cpu.get('max_frequency', 'N/A')}")
-        
-        print("\n【GPU信息】")
-        if self.results['gpu']:
-            for i, gpu in enumerate(self.results['gpu'], 1):
-                print(f"GPU {i}:")
-                print(f"  类型: {gpu.get('type', 'N/A')}")
-                print(f"  型号: {gpu.get('model', 'N/A')}")
-                print(f"  显存: {gpu.get('memory', 'N/A')}")
-                if 'driver' in gpu:
-                    print(f"  驱动: {gpu.get('driver', 'N/A')}")
-        else:
-            print("未检测到GPU")
-        
-        print("\n【内存信息】")
-        mem = self.results['memory']
-        if 'total' in mem:
-            print(f"总内存: {mem.get('total', 'N/A')}")
-            print(f"可用内存: {mem.get('available', 'N/A')}")
-            print(f"使用率: {mem.get('percent_used', 'N/A')}")
-        else:
-            print(mem.get('info', 'N/A'))
-        
-        print("\n" + "="*60)
-        print("【挖矿建议】")
-        print("="*60)
-        rec = self.results['recommendation']
-        print(f"\n推荐类型: {rec['primary_type']}")
-        
-        if rec['reason']:
-            print("\n原因分析:")
-            for reason in rec['reason']:
-                print(f"  {reason}")
-        
-        if rec['suitable_projects']:
-            print("\n适合的项目:")
-            for project in rec['suitable_projects']:
-                print(f"  • {project}")
-        
-        if rec['warnings']:
-            print("\n注意事项:")
-            for warning in rec['warnings']:
-                print(f"  {warning}")
-        
-        print("\n" + "="*60)
-        print("访问 https://supminer.net 获取详细安装教程")
-        print("联系我们获取专业的挖矿咨询服务")
-        print("="*60 + "\n")
+        if not self.system_info["gpu"]:
+            self.system_info["gpu"].append({
+                "vendor": "Unknown",
+                "model": "No dedicated GPU detected",
+                "memory": "N/A",
+                "driver": "N/A"
+            })
     
-    def save_to_file(self, filename="hardware_report.json"):
-        """保存结果到JSON文件"""
-        try:
-            with open(filename, 'w', encoding='utf-8') as f:
-                json.dump(self.results, f, ensure_ascii=False, indent=2)
-            print(f"✅ 检测报告已保存到: {filename}")
-        except Exception as e:
-            print(f"保存报告时出错: {e}")
+    def recommend_projects(self):
+        """
+        根据硬件配置推荐主流挖矿项目
+        
+        主流项目分类:
+        - ASIC专用: BTC, LTC, DOGE, BCH (需要专业矿机)
+        - GPU挖矿: ETC, RVN, KAS, ERG (显卡挖矿)
+        - CPU挖矿: XMR (处理器挖矿)
+        """
+        recommendations = []
+        
+        # GPU 推荐
+        has_gpu = any(gpu["vendor"] in ["NVIDIA", "AMD"] for gpu in self.system_info["gpu"])
+        
+        if has_gpu:
+            recommendations.append({
+                "category": "GPU Mining (显卡挖矿)",
+                "priority": "⭐⭐⭐⭐⭐",
+                "projects": [
+                    {
+                        "name": "ETC (Ethereum Classic 以太坊经典)",
+                        "algorithm": "Etchash",
+                        "description": "市值40亿美元，最主流的GPU挖矿币种",
+                        "pools": ["F2Pool", "AntPool", "ViaBTC", "币安矿池"],
+                        "exchanges": ["Binance", "OKX", "Coinbase", "Huobi"],
+                        "hardware": "推荐: NVIDIA RTX 3060/3070/3080 或 AMD RX 5700/6700"
+                    },
+                    {
+                        "name": "RVN (Ravencoin 乌鸦币)",
+                        "algorithm": "KawPow",
+                        "description": "抗ASIC设计，GPU友好，专注数字资产",
+                        "pools": ["F2Pool", "2Miners", "Ravenminer"],
+                        "exchanges": ["Binance", "OKX", "KuCoin"],
+                        "hardware": "推荐: 中高端显卡，内存>4GB"
+                    },
+                    {
+                        "name": "KAS (Kaspa)",
+                        "algorithm": "kHeavyHash",
+                        "description": "2025年快速增长项目，高TPS区块链",
+                        "pools": ["F2Pool", "Hashpool", "Woolypooly"],
+                        "exchanges": ["Binance", "OKX", "KuCoin", "MEXC"],
+                        "hardware": "推荐: 现代GPU，支持高算力"
+                    },
+                    {
+                        "name": "ERG (Ergo)",
+                        "algorithm": "Autolykos v2",
+                        "description": "学术背景深厚，能效比优秀",
+                        "pools": ["F2Pool", "Herominers", "2Miners"],
+                        "exchanges": ["Binance", "KuCoin", "Gate.io"],
+                        "hardware": "推荐: 中端GPU即可，内存>4GB"
+                    }
+                ]
+            })
+        
+        # CPU 推荐
+        cpu_cores = self.system_info["cpu"]["physical_cores"]
+        if cpu_cores and cpu_cores >= 4:
+            recommendations.append({
+                "category": "CPU Mining (处理器挖矿)",
+                "priority": "⭐⭐⭐",
+                "projects": [
+                    {
+                        "name": "XMR (Monero 门罗币)",
+                        "algorithm": "RandomX",
+                        "description": "最主流的CPU挖矿币，隐私币龙头",
+                        "pools": ["F2Pool", "SupportXMR", "MoneroOcean"],
+                        "exchanges": ["Binance", "Kraken", "Poloniex"],
+                        "hardware": f"当前CPU: {cpu_cores}核心，推荐: AMD Ryzen 9/Threadripper"
+                    }
+                ]
+            })
+        
+        # ASIC 矿机提示（如果没有高端GPU）
+        if not has_gpu or self.system_info["gpu"][0]["vendor"] == "Unknown":
+            recommendations.append({
+                "category": "ASIC Mining (专业矿机挖矿)",
+                "priority": "⭐⭐⭐⭐⭐",
+                "note": "需要购买专业ASIC矿机，收益最高但投资较大",
+                "projects": [
+                    {
+                        "name": "BTC (Bitcoin 比特币)",
+                        "algorithm": "SHA-256",
+                        "description": "全球市值第一，最成熟的挖矿生态",
+                        "pools": ["F2Pool", "AntPool", "币安矿池", "Foundry USA", "ViaBTC"],
+                        "exchanges": ["所有主流交易所"],
+                        "hardware": "需要ASIC矿机: 蚂蚁S19系列、神马M50系列"
+                    },
+                    {
+                        "name": "LTC (Litecoin 莱特币)",
+                        "algorithm": "Scrypt",
+                        "description": "比特金莱特银，可与DOGE合并挖矿",
+                        "pools": ["F2Pool", "AntPool", "ViaBTC", "Poolin"],
+                        "exchanges": ["Binance", "Coinbase", "OKX", "Huobi"],
+                        "hardware": "需要Scrypt ASIC: 蚂蚁L7、金贝KD6"
+                    },
+                    {
+                        "name": "DOGE (Dogecoin 狗狗币)",
+                        "algorithm": "Scrypt",
+                        "description": "马斯克支持，与LTC合并挖矿",
+                        "pools": ["F2Pool", "AntPool", "Prohashing"],
+                        "exchanges": ["Binance", "Coinbase", "OKX", "Robinhood"],
+                        "hardware": "使用LTC矿机即可同时挖DOGE"
+                    }
+                ]
+            })
+        
+        # 添加重要提示
+        recommendations.append({
+            "category": "⚠️ 重要提示",
+            "priority": "必读",
+            "warnings": [
+                "所有推荐币种均已上线主流交易所（Binance、OKX、Coinbase等）",
+                "所有项目均被F2Pool、AntPool等大型矿池支持",
+                "挖矿收益取决于：电费成本、设备性能、币价波动、网络难度",
+                "投资有风险，建议先用挖矿收益计算器评估ROI",
+                "CPU挖矿收益较低，主要用于学习，不建议大规模投入",
+                "GPU挖矿需要考虑显卡折旧和电费成本",
+                "ASIC挖矿需要大量初始投资，适合专业矿场",
+                "理性投资，谨防诈骗"
+            ]
+        })
+        
+        self.system_info["recommended_projects"] = recommendations
+    
+    def generate_report(self):
+        """生成检测报告"""
+        print("\n" + "="*70)
+        print("SupMiner 硬件检测报告 - 主流挖矿项目版本")
+        print("="*70)
+        
+        # 操作系统
+        print(f"\n【操作系统】")
+        print(f"  系统: {self.system_info['os']['system']} {self.system_info['os']['release']}")
+        print(f"  架构: {self.system_info['os']['machine']}")
+        
+        # CPU
+        print(f"\n【处理器 CPU】")
+        print(f"  型号: {self.system_info['cpu']['model']}")
+        print(f"  物理核心: {self.system_info['cpu']['physical_cores']}")
+        print(f"  逻辑核心: {self.system_info['cpu']['logical_cores']}")
+        if self.system_info['cpu']['max_frequency']:
+            print(f"  最大频率: {self.system_info['cpu']['max_frequency']:.2f} MHz")
+        
+        # 内存
+        print(f"\n【内存 RAM】")
+        print(f"  总容量: {self.system_info['memory']['total_gb']} GB")
+        print(f"  已使用: {self.system_info['memory']['used_gb']} GB ({self.system_info['memory']['percent']}%)")
+        print(f"  可用: {self.system_info['memory']['available_gb']} GB")
+        
+        # GPU
+        print(f"\n【显卡 GPU】")
+        for i, gpu in enumerate(self.system_info['gpu'], 1):
+            print(f"  显卡 {i}:")
+            print(f"    厂商: {gpu['vendor']}")
+            print(f"    型号: {gpu['model']}")
+            print(f"    显存: {gpu['memory']}")
+            if gpu['driver'] != "N/A":
+                print(f"    驱动: {gpu['driver']}")
+        
+        # 推荐项目
+        print(f"\n{'='*70}")
+        print("【推荐的主流挖矿项目】")
+        print(f"{'='*70}")
+        
+        for rec in self.system_info['recommended_projects']:
+            if "warnings" in rec:
+                # 警告信息
+                print(f"\n{rec['category']}")
+                print("-" * 70)
+                for warning in rec['warnings']:
+                    print(f"  ⚠️  {warning}")
+            else:
+                # 项目推荐
+                print(f"\n{rec['category']} - 优先级: {rec['priority']}")
+                if "note" in rec:
+                    print(f"  💡 {rec['note']}")
+                print("-" * 70)
+                
+                for project in rec['projects']:
+                    print(f"\n  🪙 {project['name']}")
+                    print(f"     算法: {project['algorithm']}")
+                    print(f"     简介: {project['description']}")
+                    print(f"     矿池: {', '.join(project['pools'])}")
+                    print(f"     交易所: {', '.join(project['exchanges'])}")
+                    print(f"     硬件: {project['hardware']}")
+        
+        print(f"\n{'='*70}")
+        print("详细的JSON报告已保存到: hardware_report.json")
+        print(f"{'='*70}\n")
+    
+    def save_json_report(self, filename="hardware_report.json"):
+        """保存JSON格式报告"""
+        with open(filename, 'w', encoding='utf-8') as f:
+            json.dump(self.system_info, f, indent=2, ensure_ascii=False)
     
     def run(self):
-        """运行完整检测"""
-        print("正在检测硬件信息...")
+        """运行完整检测流程"""
+        print("正在检测硬件配置...")
+        self.detect_os()
+        self.detect_cpu()
+        self.detect_memory()
+        self.detect_gpu()
         
-        self.get_system_info()
-        self.get_cpu_info()
-        self.get_gpu_info()
-        self.get_memory_info()
-        self.analyze_and_recommend()
+        print("正在分析并推荐主流挖矿项目...")
+        self.recommend_projects()
         
-        self.print_results()
-        self.save_to_file()
-
-def check_dependencies():
-    """检查依赖库"""
-    try:
-        import psutil
-        return True
-    except ImportError:
-        print("\n⚠️  警告: 未安装 psutil 库")
-        print("建议安装以获取完整信息: pip install psutil")
-        print("继续使用基础检测功能...\n")
-        return False
+        self.generate_report()
+        self.save_json_report()
 
 def main():
     print("""
-    ╔═══════════════════════════════════════════════════════════╗
-    ║         SupMiner.net 硬件检测工具 v1.0                    ║
-    ║         Hardware Checker for Mining Projects              ║
-    ╚═══════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════╗
+║                                                              ║
+║          SupMiner 硬件检测工具 - 主流项目版本                ║
+║                                                              ║
+║          推荐的都是上交易所的主流币种                         ║
+║          支持蚂蚁矿池、F2Pool、币安矿池等                     ║
+║                                                              ║
+╚══════════════════════════════════════════════════════════════╝
     """)
     
-    check_dependencies()
+    detector = HardwareDetector()
+    detector.run()
     
-    checker = HardwareChecker()
-    checker.run()
-    
-    print("\n提示: 使用 'python hardware_checker.py' 可重新运行检测")
+    print("\n✅ 检测完成！")
+    print("📧 如需专业挖矿部署服务，请联系:")
+    print("   - 网站: https://supminer.net")
+    print("   - 邮箱: support@supminer.net")
+    print("   - Telegram: @supminer")
+    print("\n💡 提示: 所有推荐项目均为主流币种，流动性有保障")
+    print("⚠️  理性投资，谨防诈骗！\n")
 
 if __name__ == "__main__":
     main()

@@ -1,314 +1,284 @@
-# SupMiner Hardware Checker
+# SupMiner 硬件检测工具 - 主流版本
 
-<div align="center">
+🔍 自动检测硬件配置，推荐**主流的、上交易所的、大型矿池支持**的挖矿项目
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
-![Python](https://img.shields.io/badge/python-3.6+-green.svg)
-![License](https://img.shields.io/badge/license-MIT-orange.svg)
-
-**智能硬件检测工具 - 为您推荐最适合的挖矿方案**
-
-[English](#english) | [中文](#中文)
-
-</div>
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python: 3.6+](https://img.shields.io/badge/Python-3.6%2B-blue.svg)](https://www.python.org/downloads/)
 
 ---
 
-## 中文
+## ✨ 特点
 
-### 📋 项目简介
+- ✅ **主流币种推荐** - 只推荐上线 Binance、OKX、Coinbase 等交易所的币种
+- ✅ **大型矿池支持** - 所有推荐项目均被 F2Pool、AntPool、币安矿池等支持
+- ✅ **智能硬件检测** - 自动识别 CPU、GPU、内存配置
+- ✅ **分类推荐** - 根据硬件类型推荐最适合的挖矿项目
+- ✅ **跨平台支持** - Windows、Linux、macOS 全支持
+- ✅ **详细报告** - 生成 JSON 格式的完整硬件报告
 
-SupMiner Hardware Checker 是一款专业的硬件检测工具，专为 [supminer.net](https://supminer.net) 用户设计。它能够：
+---
 
-- 🔍 **智能检测** CPU、GPU、内存等硬件信息
-- 💡 **专业建议** 根据硬件配置推荐适合的挖矿项目
-- 📊 **详细报告** 生成完整的硬件检测报告（JSON格式）
-- 🖥️ **跨平台** 支持 Windows、Linux、macOS
+## 🪙 支持的主流项目
 
-### ✨ 功能特点
+### GPU 挖矿（显卡）
 
-#### 硬件检测
-- ✅ CPU型号、核心数、频率
-- ✅ NVIDIA/AMD GPU检测
-- ✅ 显存容量和驱动版本
-- ✅ 系统内存信息
-- ✅ 操作系统详情
+| 币种 | 算法 | 市值排名 | 主要矿池 | 交易所 |
+|------|------|---------|---------|--------|
+| **ETC** 以太坊经典 | Etchash | Top 30 | F2Pool, AntPool, ViaBTC | Binance, OKX, Coinbase |
+| **RVN** 乌鸦币 | KawPow | Top 100 | F2Pool, 2Miners | Binance, OKX, KuCoin |
+| **KAS** Kaspa | kHeavyHash | Top 50 | F2Pool, Hashpool | Binance, OKX, MEXC |
+| **ERG** Ergo | Autolykos v2 | Top 150 | F2Pool, Herominers | Binance, KuCoin, Gate.io |
 
-#### 智能推荐
-- 🎯 GPU挖矿项目推荐（Qubic、Nexa、Nexus等）
-- 🎯 CPU挖矿项目推荐（Ore、Gauntlet等）
-- ⚠️ 硬件不足警告
-- 📈 性能优化建议
+### CPU 挖矿（处理器）
 
-### 🚀 快速开始
+| 币种 | 算法 | 市值排名 | 主要矿池 | 交易所 |
+|------|------|---------|---------|--------|
+| **XMR** 门罗币 | RandomX | Top 50 | F2Pool, SupportXMR | Binance, Kraken, Poloniex |
 
-#### 方法一：直接运行（推荐）
+### ASIC 挖矿（专业矿机）
+
+| 币种 | 算法 | 市值排名 | 主要矿池 | 推荐矿机 |
+|------|------|---------|---------|---------|
+| **BTC** 比特币 | SHA-256 | 第1名 | F2Pool, AntPool, 币安矿池 | 蚂蚁S19, 神马M50 |
+| **LTC** 莱特币 | Scrypt | Top 20 | F2Pool, AntPool, ViaBTC | 蚂蚁L7, 金贝KD6 |
+| **DOGE** 狗狗币 | Scrypt | Top 10 | F2Pool, AntPool | 与LTC合并挖矿 |
+
+---
+
+## 🚀 快速开始
+
+### 安装依赖
+
+#### Linux / macOS
 
 ```bash
-# 1. 下载脚本
-curl -O https://raw.githubusercontent.com/weinotes/supminer-hardware-checker/main/hardware_checker.py
+# 推荐方式（确保使用正确的Python环境）
+python3 -m pip install psutil
 
-# 2. 运行检测（基础功能）
-python3 hardware_checker.py
-
-# 3. 安装完整依赖（可选，获取更详细信息）
-pip install psutil
-python3 hardware_checker.py
-```
-
-#### 方法二：克隆仓库
-
-```bash
-# 1. 克隆项目
-git clone https://github.com/weinotes/supminer-hardware-checker.git
-cd supminer-hardware-checker
-
-# 2. 安装依赖
-pip install -r requirements.txt
-
-# 3. 运行检测
-python hardware_checker.py
-```
-
-### 📦 依赖要求
-
-- Python 3.6+
-- psutil (可选，用于获取详细硬件信息)
-
-#### 安装 psutil
-
-**macOS / Windows:**
-```bash
-pip install psutil
-# 或
-pip3 install psutil
-```
-
-**Ubuntu/Debian 22.04+ (推荐方法):**
-```bash
-# 方法 1: 使用系统包管理器（最简单）
-sudo apt update
+# 或使用系统包管理器（Ubuntu/Debian）
 sudo apt install python3-psutil
 
-# 方法 2: 安装到用户目录
+# 或使用用户目录安装
+pip3 install --user psutil
+```
+
+#### Windows
+
+```powershell
+pip install psutil
+```
+
+### 运行检测
+
+```bash
+# Linux / macOS
+python3 hardware_checker_v2.py
+
+# Windows
+python hardware_checker_v2.py
+```
+
+---
+
+## 📊 输出示例
+
+```
+╔══════════════════════════════════════════════════════════════╗
+║          SupMiner 硬件检测工具 - 主流项目版本                ║
+║          推荐的都是上交易所的主流币种                         ║
+║          支持蚂蚁矿池、F2Pool、币安矿池等                     ║
+╚══════════════════════════════════════════════════════════════╝
+
+======================================================================
+SupMiner 硬件检测报告 - 主流挖矿项目版本
+======================================================================
+
+【操作系统】
+  系统: Linux 5.15.0
+  架构: x86_64
+
+【处理器 CPU】
+  型号: AMD Ryzen 9 5900X
+  物理核心: 12
+  逻辑核心: 24
+  最大频率: 3700.00 MHz
+
+【显卡 GPU】
+  显卡 1:
+    厂商: NVIDIA
+    型号: NVIDIA GeForce RTX 3080
+    显存: 10240 MiB
+    驱动: 525.85.05
+
+======================================================================
+【推荐的主流挖矿项目】
+======================================================================
+
+GPU Mining (显卡挖矿) - 优先级: ⭐⭐⭐⭐⭐
+----------------------------------------------------------------------
+
+  🪙 ETC (Ethereum Classic 以太坊经典)
+     算法: Etchash
+     简介: 市值40亿美元，最主流的GPU挖矿币种
+     矿池: F2Pool, AntPool, ViaBTC, 币安矿池
+     交易所: Binance, OKX, Coinbase, Huobi
+     硬件: 推荐: NVIDIA RTX 3060/3070/3080 或 AMD RX 5700/6700
+
+  🪙 RVN (Ravencoin 乌鸦币)
+     算法: KawPow
+     简介: 抗ASIC设计，GPU友好，专注数字资产
+     矿池: F2Pool, 2Miners, Ravenminer
+     交易所: Binance, OKX, KuCoin
+     硬件: 推荐: 中高端显卡，内存>4GB
+
+...
+
+⚠️ 重要提示 - 优先级: 必读
+----------------------------------------------------------------------
+  ⚠️  所有推荐币种均已上线主流交易所（Binance、OKX、Coinbase等）
+  ⚠️  所有项目均被F2Pool、AntPool等大型矿池支持
+  ⚠️  挖矿收益取决于：电费成本、设备性能、币价波动、网络难度
+  ⚠️  理性投资，谨防诈骗
+```
+
+---
+
+## 📋 生成的报告文件
+
+运行后会生成 `hardware_report.json`，包含：
+- 完整的硬件信息
+- 详细的项目推荐
+- 矿池和交易所列表
+- 硬件配置建议
+
+---
+
+## 🔧 故障排除
+
+### 问题 1: `psutil` 模块未找到
+
+**macOS 解决方法:**
+```bash
+# 方法1: 使用python3 -m pip
+python3 -m pip install psutil
+
+# 方法2: 检查Python路径
+which python3
+/usr/bin/python3 -m pip install --user psutil
+
+# 方法3: 验证安装
+python3 -c "import psutil; print(psutil.__version__)"
+```
+
+**Ubuntu 22.04+ 解决方法:**
+```bash
+# 方法1: 使用系统包管理器（推荐）
+sudo apt install python3-psutil
+
+# 方法2: 用户目录安装
 pip3 install --user psutil
 
-# 方法 3: 使用虚拟环境
+# 方法3: 虚拟环境
 python3 -m venv venv
 source venv/bin/activate
 pip install psutil
 ```
 
-**其他 Linux 发行版:**
-```bash
-pip3 install psutil
-# 如果遇到 externally-managed-environment 错误，使用:
-pip3 install --user psutil
-```
+### 问题 2: GPU 检测不到
 
-### 💻 使用示例
+**解决方法:**
+- NVIDIA 显卡：安装 [NVIDIA 驱动](https://www.nvidia.com/Download/index.aspx)
+- AMD 显卡：确保系统识别显卡（Linux: `lspci | grep VGA`）
 
-#### Windows用户
-
-```powershell
-# 使用PowerShell或CMD
-python hardware_checker.py
-```
-
-#### Linux/Mac用户
+### 问题 3: 权限问题
 
 ```bash
-# 使用终端
-python3 hardware_checker.py
+# 给脚本添加执行权限
+chmod +x hardware_checker_v2.py
+
+# 使用 sudo（如果需要）
+sudo python3 hardware_checker_v2.py
 ```
 
-#### 输出示例
+---
 
-```
-============================================================
-SupMiner.net 硬件检测报告
-============================================================
+## 🌐 关于主流项目的说明
 
-检测时间: 2024-12-07 15:30:00
+### 为什么只推荐这些项目？
 
-【系统信息】
-操作系统: Linux
-系统版本: #1 SMP PREEMPT_DYNAMIC
-架构: x86_64
+1. **交易所上线** - 所有推荐币种都在 Binance、OKX、Coinbase 等主流交易所交易
+2. **矿池支持** - 被 F2Pool、AntPool、币安矿池等大型矿池支持
+3. **流动性保障** - 市值排名靠前，交易量大，容易变现
+4. **长期稳定** - 项目运行多年，社区活跃，不是短期炒作
 
-【CPU信息】
-型号: AMD Ryzen 9 5900X 12-Core Processor
-物理核心: 12
-逻辑核心: 24
-最大频率: 4950.00 MHz
+### 不推荐小众项目的原因
 
-【GPU信息】
-GPU 1:
-  类型: NVIDIA
-  型号: NVIDIA GeForce RTX 3080
-  显存: 10240 MiB
-  驱动: 535.129.03
+❌ **流动性差** - 难以在交易所卖出  
+❌ **矿池少** - 挖矿不稳定，收益波动大  
+❌ **风险高** - 项目可能跑路或归零  
+❌ **不适合新手** - 需要专业知识判断
 
-【内存信息】
-总内存: 32.00 GB
-可用内存: 24.50 GB
-使用率: 23.4%
+---
 
-============================================================
-【挖矿建议】
-============================================================
+## 💼 专业服务
 
-推荐类型: GPU挖矿（优先推荐）
+需要专业的挖矿部署服务？
 
-原因分析:
-  ✅ 检测到NVIDIA显卡，适合GPU挖矿
-  ✅ CPU拥有12个物理核心，可同时进行CPU挖矿
-  ✅ 系统内存充足 (32.00 GB)
+- 🌐 **官网**: https://supminer.net
+- 📧 **邮箱**: support@supminer.net
+- 💬 **Telegram**: @supminer
 
-适合的项目:
-  • Qubic (GPU) - 推荐
-  • Nexa (GPU)
-  • Nexus (GPU)
-  • Gauntlet (GPU)
-  • Qubic (CPU)
-  • Ore
-  • Nexus (CPU)
-  • Gauntlet (CPU)
+### 服务价格
 
-============================================================
-访问 https://supminer.net 获取详细安装教程
-联系我们获取专业的挖矿咨询服务
-============================================================
-```
+- 🔧 远程挖矿部署: ¥800起
+- 💡 技术咨询: ¥300/小时
+- 🏢 托管服务: ¥300/台/月起
+- 📚 技术培训: ¥500/课时
 
-### 📊 支持的挖矿项目
+---
 
-#### GPU挖矿项目
-- **Qubic (GPU)** - NVIDIA GPU优化，高效能
-- **Nexa** - 支持NVIDIA显卡
-- **Nexus (GPU)** - GPU加速版本
-- **Gauntlet (GPU)** - 图形计算优化
+## 📜 免责声明
 
-#### CPU挖矿项目
-- **Qubic (CPU)** - 多核心CPU优化
-- **Ore** - 轻量级CPU挖矿
-- **Nexus (CPU)** - CPU友好型
-- **Gauntlet (CPU)** - 通用CPU版本
+- ⚠️ 本工具仅用于硬件检测和信息展示
+- ⚠️ 挖矿收益因市场、硬件、电费等因素波动
+- ⚠️ 投资有风险，建议充分评估后决策
+- ⚠️ 遵守当地法律法规进行挖矿活动
 
-### 🔧 高级用法
+---
 
-#### 生成JSON报告
+## 📄 许可证
 
-脚本会自动生成 `hardware_report.json` 文件，包含完整的硬件信息：
+MIT License - 详见 [LICENSE](LICENSE) 文件
 
-```json
-{
-  "timestamp": "2024-12-07 15:30:00",
-  "system": {...},
-  "cpu": {...},
-  "gpu": [...],
-  "memory": {...},
-  "recommendation": {...}
-}
-```
+---
 
-#### 自定义检测
-
-您可以修改脚本以适应特定需求：
-
-```python
-checker = HardwareChecker()
-checker.get_cpu_info()
-checker.get_gpu_info()
-# 自定义分析逻辑
-```
-
-### 🤝 贡献指南
+## 🤝 贡献
 
 欢迎提交 Issue 和 Pull Request！
 
-1. Fork 本项目
-2. 创建特性分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
-4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 开启 Pull Request
+---
 
-### 📝 更新日志
+## 📞 联系我们
 
-#### v1.0.0 (2024-12-07)
-- 🎉 首次发布
-- ✅ 支持CPU/GPU/内存检测
-- ✅ 智能推荐挖矿项目
-- ✅ 跨平台支持
-- ✅ JSON报告导出
-
-### 📞 联系我们
-
-- 🌐 官网: [supminer.net](https://supminer.net)
-- 📧 邮箱: support@supminer.net
-- 💬 Telegram: [加入我们的社群]
-
-### 📄 许可证
-
-本项目采用 MIT 许可证 - 详见 [LICENSE](LICENSE) 文件
-
-### ⚠️ 免责声明
-
-本工具仅用于硬件检测和项目推荐，不包含任何挖矿程序。实际挖矿收益取决于多种因素，请理性投资。
+- **网站**: https://supminer.net
+- **邮箱**: support@supminer.net
+- **GitHub**: https://github.com/weinotes/supminer-hardware-checker
 
 ---
 
-## English
-
-### 📋 Project Overview
-
-SupMiner Hardware Checker is a professional hardware detection tool designed for [supminer.net](https://supminer.net) users. It can:
-
-- 🔍 **Smart Detection** - CPU, GPU, memory and other hardware information
-- 💡 **Professional Advice** - Recommend suitable mining projects based on hardware configuration
-- 📊 **Detailed Reports** - Generate complete hardware detection reports (JSON format)
-- 🖥️ **Cross-platform** - Support Windows, Linux, macOS
-
-### 🚀 Quick Start
-
-```bash
-# Download and run
-curl -O https://raw.githubusercontent.com/weinotes/supminer-hardware-checker/main/hardware_checker.py
-python3 hardware_checker.py
-
-# For detailed information, install dependencies
-pip install psutil
-```
-
-### 💻 Usage
-
-```bash
-python hardware_checker.py
-```
-
-### 📊 Supported Mining Projects
-
-**GPU Mining:**
-- Qubic (GPU), Nexa, Nexus (GPU), Gauntlet (GPU)
-
-**CPU Mining:**
-- Qubic (CPU), Ore, Nexus (CPU), Gauntlet (CPU)
-
-### 📞 Contact
-
-- 🌐 Website: [supminer.net](https://supminer.net)
-- 📧 Email: support@supminer.net
-
-### 📄 License
-
-MIT License - See [LICENSE](LICENSE) file
+**理性投资，谨防诈骗！** 💎
 
 ---
 
-<div align="center">
+## 更新日志
 
-**Made with ❤️ by SupMiner Team**
+### v2.0 - 2024-12-07
+- ✅ 更新为主流挖矿项目推荐
+- ✅ 只推荐上线主流交易所的币种
+- ✅ 只推荐主流矿池支持的项目
+- ✅ 移除小众项目（Qubic, Nexa, Nexus, Ore, Gauntlet）
+- ✅ 新增主流项目（BTC, LTC, DOGE, ETC, RVN, KAS, ERG, XMR）
+- ✅ 添加详细的矿池和交易所信息
 
-⭐ 如果这个项目对你有帮助，请给我们一个 Star！
-
-</div>
+### v1.0 - 2024-12-06
+- 初始版本
