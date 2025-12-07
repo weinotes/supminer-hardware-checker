@@ -72,10 +72,10 @@ pip install psutil
 
 ```bash
 # Linux / macOS
-python3 hardware_checker_v2.py
+python3 hardware_checker.py
 
 # Windows
-python hardware_checker_v2.py
+python hardware_checker.py
 ```
 
 ---
@@ -194,10 +194,10 @@ pip install psutil
 
 ```bash
 # 给脚本添加执行权限
-chmod +x hardware_checker_v2.py
+chmod +x hardware_checker.py
 
 # 使用 sudo（如果需要）
-sudo python3 hardware_checker_v2.py
+sudo python3 hardware_checker.py
 ```
 
 ---
