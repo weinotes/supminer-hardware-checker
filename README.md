@@ -164,4 +164,4 @@ MIT License — see [LICENSE](LICENSE)
 
 ---
 
-**Davey Wong** <wgwcko@gmail.com> · [www.guangweiblog.com](https://www.guangweiblog.com) · English primary, Chinese supplementary
+**Davey Wong** <wgwcko@gmail.com> · [www.guangweiblog.com](https://www.guangweiblog.com)

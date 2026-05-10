@@ -443,7 +443,7 @@ def main() -> None:
     print("⚠️  理性投资，谨防诈骗！\n")
     print("---")
     print("Project by Davey Wong <wgwcko@gmail.com> | https://www.guangweiblog.com")
-    print("English primary, Chinese supplementary. Licensed under MIT.\n")
+    print("Licensed under MIT.\n")
 
 
 if __name__ == "__main__":
