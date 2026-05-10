@@ -9,7 +9,7 @@ description = "Auto-detect hardware and recommend mainstream mineable cryptocurr
 readme = "README.md"
 license = {text = "MIT"}
 authors = [
-    {name = "SupMiner Team", email = "support@supminer.net"},
+    {name = "Davey Wong", email = "wgwcko@gmail.com"},
 ]
 keywords = ["mining", "crypto", "hardware-detection", "gpu-mining", "asic"]
 classifiers = [
@@ -36,6 +36,7 @@ dependencies = [
 rich = ["rich>=13.0.0"]
 
 [project.urls]
+Author = "https://www.guangweiblog.com"
 Homepage = "https://github.com/weinotes/supminer-hardware-checker"
 Repository = "https://github.com/weinotes/supminer-hardware-checker"
 "SupMiner" = "https://supminer.net"

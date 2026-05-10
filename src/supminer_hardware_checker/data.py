@@ -1,4 +1,9 @@
-"""Mining project data — update this file to refresh coin/pool/exchange info."""
+"""
+Mining project data — update this file to refresh coin/pool/exchange info.
+
+Author: Davey Wong <wgwcko@gmail.com> (https://www.guangweiblog.com)
+Licensed under MIT.
+"""
 
 from __future__ import annotations
 from dataclasses import dataclass, field

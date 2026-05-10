@@ -1,6 +1,8 @@
 # SupMiner 硬件检测工具 - v3.0
 
-🔍 自动检测硬件配置，推荐 **主流的、上交易所的、大型矿池支持** 的挖矿项目
+🔍 Hardware Checker for Mainstream Crypto Mining · 主流挖矿硬件检测工具
+
+**Author:** Davey Wong <wgwcko@gmail.com> · [www.guangweiblog.com](https://www.guangweiblog.com)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python: 3.8+](https://img.shields.io/badge/Python-3.8%2B-blue.svg)](https://www.python.org/downloads/)
@@ -156,6 +158,10 @@ make clean
 
 ---
 
-## 📄 许可证
+## 📄 License
 
-MIT License — 详见 [LICENSE](LICENSE)
+MIT License — see [LICENSE](LICENSE)
+
+---
+
+**Davey Wong** <wgwcko@gmail.com> · [www.guangweiblog.com](https://www.guangweiblog.com) · English primary, Chinese supplementary

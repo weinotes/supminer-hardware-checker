@@ -1,6 +1,7 @@
 """
 SupMiner Hardware Checker
 ~~~~~~~~~~~~~~~~~~~~~~~~~
+
 Automated hardware detection and mainstream mining project recommendations.
 
 Key Features:
@@ -10,7 +11,8 @@ Key Features:
     - Supports NVIDIA (nvidia-smi) and AMD (lspci) GPU detection
 
 :license: MIT, see LICENSE for more details.
+:author: Davey Wong <wgwcko@gmail.com> (https://www.guangweiblog.com)
 """
 
 __version__ = "3.0.0"
-__author__ = "SupMiner Team <support@supminer.net>"
+__author__ = "Davey Wong <wgwcko@gmail.com>"

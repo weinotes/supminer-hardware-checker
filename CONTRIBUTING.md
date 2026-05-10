@@ -1,5 +1,7 @@
 # Contributing to SupMiner Hardware Checker
 
+*Project by Davey Wong <wgwcko@gmail.com> — [www.guangweiblog.com](https://www.guangweiblog.com)*
+
 Thanks for your interest in contributing! 🎉
 
 ## How to Contribute
@@ -42,4 +44,4 @@ src/supminer_hardware_checker/
 
 ## Questions?
 
-Open an issue or email support@supminer.net
+Open an issue or email wgwcko@gmail.com

@@ -5,6 +5,9 @@ SupMiner Hardware Checker — detector module.
 
 Detects OS, CPU, memory, and GPU, then recommends mainstream
 mineable cryptocurrency projects based on detected hardware.
+
+Author: Davey Wong <wgwcko@gmail.com> (https://www.guangweiblog.com)
+Licensed under MIT.
 """
 
 from __future__ import annotations
@@ -438,6 +441,9 @@ def main() -> None:
     print("   - Telegram: @supminer")
     print("\n💡 提示: 所有推荐项目均为主流币种，流动性有保障")
     print("⚠️  理性投资，谨防诈骗！\n")
+    print("---")
+    print("Project by Davey Wong <wgwcko@gmail.com> | https://www.guangweiblog.com")
+    print("English primary, Chinese supplementary. Licensed under MIT.\n")
 
 
 if __name__ == "__main__":
