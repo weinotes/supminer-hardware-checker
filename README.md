@@ -1,5 +1,7 @@
 # SupMiner Hardware Checker
 
+[简体中文](README.zh-CN.md) | English
+
 🔍 Auto-detect hardware and recommend mainstream mineable cryptocurrencies.
 
 **Author:** Davey Wong <wgwcko@gmail.com> · [www.guangweiblog.com](https://www.guangweiblog.com)

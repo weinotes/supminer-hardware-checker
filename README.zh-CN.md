@@ -1,5 +1,7 @@
 # SupMiner 硬件检测工具
 
+中文 | [English](README.md)
+
 🔍 自动检测硬件配置，推荐主流挖矿项目
 
 **作者：** Davey Wong <wgwcko@gmail.com> · [www.guangweiblog.com](https://www.guangweiblog.com)
