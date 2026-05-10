@@ -44,8 +44,6 @@ from supminer_hardware_checker.data import (
 try:
     from rich.console import Console
     from rich.panel import Panel
-    from rich.table import Table
-    from rich import box
 
     RICH_AVAILABLE = True
     console = Console()
@@ -263,12 +261,12 @@ class HardwareDetector:
         print(sep)
 
         # OS
-        print(f"\n【操作系统】")
+        print("\n【操作系统】")
         print(f"  系统: {info.os['system']} {info.os['release']}")
         print(f"  架构: {info.os['machine']}")
 
         # CPU
-        print(f"\n【处理器 CPU】")
+        print("\n【处理器 CPU】")
         print(f"  型号: {info.cpu['model']}")
         print(f"  物理核心: {info.cpu['physical_cores']}")
         print(f"  逻辑核心: {info.cpu['logical_cores']}")
@@ -276,13 +274,13 @@ class HardwareDetector:
             print(f"  最大频率: {info.cpu['max_frequency_mhz']} MHz")
 
         # Memory
-        print(f"\n【内存 RAM】")
+        print("\n【内存 RAM】")
         print(f"  总容量: {info.memory['total_gb']} GB")
         print(f"  已使用: {info.memory['used_gb']} GB ({info.memory['percent']}%)")
         print(f"  可用: {info.memory['available_gb']} GB")
 
         # GPU
-        print(f"\n【显卡 GPU】")
+        print("\n【显卡 GPU】")
         for i, gpu in enumerate(info.gpu, 1):
             print(f"  显卡 {i}:")
             print(f"    厂商: {gpu['vendor']}")
