@@ -1,430 +1,161 @@
-# SupMiner 硬件检测工具 - 主流版本
+# SupMiner 硬件检测工具 - v3.0
 
-🔍 自动检测硬件配置，推荐**主流的、上交易所的、大型矿池支持**的挖矿项目
+🔍 自动检测硬件配置，推荐 **主流的、上交易所的、大型矿池支持** 的挖矿项目
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python: 3.6+](https://img.shields.io/badge/Python-3.6%2B-blue.svg)](https://www.python.org/downloads/)
+[![Python: 3.8+](https://img.shields.io/badge/Python-3.8%2B-blue.svg)](https://www.python.org/downloads/)
+[![PyPI version](https://img.shields.io/badge/pypi-v3.0.0-blue)](https://pypi.org/project/supminer-hardware-checker/)
 
 ---
 
-## 🚀 新手快速开始（3步）
+## 🚀 快速开始（3步）
 
-### 第 1 步：下载工具
-
-#### 方法 A：下载 ZIP 压缩包（最简单，推荐新手）
-
-1. **点击下载链接**：
-   - 访问：https://github.com/weinotes/supminer-hardware-checker
-   - 点击绿色的 **Code** 按钮
-   - 选择 **Download ZIP**
-   - 保存到电脑（比如下载到 `下载` 文件夹）
-
-2. **解压缩文件**：
-   - 找到下载的 `supminer-hardware-checker-main.zip`
-   - 右键 → 解压 / Extract
-   - 会得到 `supminer-hardware-checker-main` 文件夹
-
-#### 方法 B：使用 Git 命令（适合有经验的用户）
+### 第 1 步：下载
 
 ```bash
-# 克隆仓库
+# Git 方式
 git clone https://github.com/weinotes/supminer-hardware-checker.git
-
-# 进入目录
 cd supminer-hardware-checker
-```
 
----
+# 或下载 ZIP：https://github.com/weinotes/supminer-hardware-checker/archive/refs/heads/main.zip
+```
 
 ### 第 2 步：安装依赖
 
-#### Windows 用户
+```bash
+# 标准安装（推荐）
+pip install -e .
 
-1. **打开命令提示符（CMD）**：
-   - 按 `Win + R`
-   - 输入 `cmd`，回车
+# 含美化输出（可选）
+pip install -e .[rich]
 
-2. **进入下载的文件夹**：
-   ```cmd
-   cd C:\Users\你的用户名\Downloads\supminer-hardware-checker-main
-   ```
-
-3. **安装 psutil**：
-   ```cmd
-   pip install psutil
-   ```
-
-#### macOS 用户
-
-1. **打开终端（Terminal）**：
-   - 按 `Cmd + 空格`
-   - 输入 `terminal`，回车
-
-2. **进入下载的文件夹**：
-   ```bash
-   cd ~/Downloads/supminer-hardware-checker-main
-   ```
-
-3. **安装 psutil**：
-   ```bash
-   python3 -m pip install psutil
-   ```
-
-#### Linux 用户
-
-1. **打开终端**：
-   ```bash
-   # 进入下载的文件夹
-   cd ~/Downloads/supminer-hardware-checker-main
-   
-   # 方法1: 使用系统包管理器（推荐）
-   sudo apt install python3-psutil
-   
-   # 方法2: 使用 pip
-   pip3 install psutil
-   ```
-
----
-
-### 第 3 步：运行检测
-
-#### Windows
-
-```cmd
-python hardware_checker.py
+# 或直接 pip install psutil
 ```
 
-#### macOS / Linux
+### 第 3 步：运行
 
 ```bash
-python3 hardware_checker.py
-```
+# 方法一：模块运行
+python -m supminer_hardware_checker
 
-**完成！** 🎉 工具会自动检测你的硬件并推荐适合的挖矿项目。
+# 方法二：命令行（安装后可用）
+supminer-check
 
----
-
-## 📹 视频教程（待补充）
-
-我们正在制作详细的视频教程，敬请期待！
-
----
-
-## 📊 你会看到什么？
-
-运行后，工具会显示：
-
-```
-╔══════════════════════════════════════════════════════════════╗
-║          SupMiner 硬件检测工具 - 主流项目版本                ║
-║          推荐的都是上交易所的主流币种                         ║
-║          支持蚂蚁矿池、F2Pool、币安矿池等                     ║
-╚══════════════════════════════════════════════════════════════╝
-
-正在检测硬件配置...
-正在分析并推荐主流挖矿项目...
-
-======================================================================
-SupMiner 硬件检测报告 - 主流挖矿项目版本
-======================================================================
-
-【操作系统】
-  系统: Windows 11 / macOS 14 / Linux
-  架构: x86_64
-
-【处理器 CPU】
-  型号: Intel Core i7-12700K / AMD Ryzen 9 5900X
-  物理核心: 12
-  逻辑核心: 24
-
-【内存 RAM】
-  总容量: 32.0 GB
-  可用: 20.5 GB
-
-【显卡 GPU】
-  显卡 1:
-    厂商: NVIDIA
-    型号: GeForce RTX 3080
-    显存: 10240 MiB
-
-======================================================================
-【推荐的主流挖矿项目】
-======================================================================
-
-GPU Mining (显卡挖矿) - 优先级: ⭐⭐⭐⭐⭐
-----------------------------------------------------------------------
-
-  🪙 ETC (Ethereum Classic 以太坊经典)
-     算法: Etchash
-     简介: 市值40亿美元，最主流的GPU挖矿币种
-     矿池: F2Pool, AntPool, ViaBTC, 币安矿池
-     交易所: Binance, OKX, Coinbase, Huobi
-     硬件: 推荐: NVIDIA RTX 3060/3070/3080
-
-  🪙 RVN (Ravencoin 乌鸦币)
-     算法: KawPow
-     简介: 抗ASIC设计，GPU友好
-     矿池: F2Pool, 2Miners, Ravenminer
-     交易所: Binance, OKX, KuCoin
-
-...
-
-⚠️ 重要提示
-----------------------------------------------------------------------
-  ⚠️  所有推荐币种均已上线主流交易所
-  ⚠️  所有项目均被F2Pool、AntPool等大型矿池支持
-  ⚠️  理性投资，谨防诈骗
-
-======================================================================
-详细的JSON报告已保存到: hardware_report.json
-======================================================================
-
-✅ 检测完成！
-📧 如需专业挖矿部署服务，请联系:
-   - 网站: https://supminer.net
-   - 邮箱: support@supminer.net
-   - Telegram: @supminer
+# 方法三：使用 Make
+make run
 ```
 
 ---
 
-## 🪙 我们推荐的主流项目
+## 📊 检测内容
 
-### GPU 挖矿（显卡）
+| 类别 | 检测项 | 说明 |
+|------|--------|------|
+| 💻 **操作系统** | 系统类型、版本、架构 | Windows / macOS / Linux |
+| 🧠 **CPU** | 型号、核心数、频率、使用率 | 物理核心+逻辑核心 |
+| 💾 **内存** | 总容量、可用容量 | 以 GB 显示 |
+| 🎮 **GPU** | 厂商、型号、显存、驱动 | NVIDIA (nvidia-smi) / AMD (lspci) |
 
-| 币种 | 算法 | 市值排名 | 交易所 | 矿池 |
-|------|------|---------|--------|------|
-| **ETC** 以太坊经典 | Etchash | Top 30 | Binance, OKX, Coinbase | F2Pool, AntPool |
-| **RVN** 乌鸦币 | KawPow | Top 100 | Binance, OKX, KuCoin | F2Pool, 2Miners |
-| **KAS** Kaspa | kHeavyHash | Top 50 | Binance, OKX, MEXC | F2Pool, Hashpool |
-| **ERG** Ergo | Autolykos v2 | Top 150 | Binance, KuCoin | F2Pool, Herominers |
+## 🪙 推荐项目
 
-### CPU 挖矿（处理器）
+### GPU 挖矿
 
-| 币种 | 算法 | 市值排名 | 交易所 | 矿池 |
-|------|------|---------|--------|------|
-| **XMR** 门罗币 | RandomX | Top 50 | Binance, Kraken | F2Pool, SupportXMR |
+| 币种 | 算法 | 交易所 | 矿池 |
+|------|------|--------|------|
+| **ETC** 以太坊经典 | Etchash | Binance, OKX, Coinbase | F2Pool, AntPool |
+| **RVN** 乌鸦币 | KawPow | Binance, OKX, KuCoin | F2Pool, 2Miners |
+| **KAS** Kaspa | kHeavyHash | Binance, OKX, KuCoin | F2Pool, Hashpool |
+| **ERG** Ergo | Autolykos v2 | Binance, KuCoin, Gate.io | F2Pool, Herominers |
+
+### CPU 挖矿
+
+| 币种 | 算法 | 交易所 | 矿池 |
+|------|------|--------|------|
+| **XMR** 门罗币 | RandomX | Binance, Kraken | F2Pool, SupportXMR |
 
 ### ASIC 挖矿（专业矿机）
 
-| 币种 | 算法 | 市值排名 | 交易所 | 推荐矿机 |
-|------|------|---------|--------|---------|
-| **BTC** 比特币 | SHA-256 | 第1名 | 所有主流交易所 | 蚂蚁S19, 神马M50 |
-| **LTC** 莱特币 | Scrypt | Top 20 | 所有主流交易所 | 蚂蚁L7, 金贝KD6 |
-| **DOGE** 狗狗币 | Scrypt | Top 10 | 所有主流交易所 | 与LTC合并挖矿 |
+| 币种 | 算法 | 推荐矿机 |
+|------|------|---------|
+| **BTC** 比特币 | SHA-256 | 蚂蚁S21, 神马M60 |
+| **LTC** 莱特币 | Scrypt | 蚂蚁L7, 金贝KD6 |
+| **DOGE** 狗狗币 | Scrypt | 与LTC合并挖矿 |
 
 ---
 
-## ❓ 常见问题
+## 📦 项目结构
 
-### Q1: 提示 "No module named 'psutil'"
-
-**解决方法：**
-```bash
-# Windows
-pip install psutil
-
-# macOS / Linux
-python3 -m pip install psutil
+```
+supminer-hardware-checker/
+├── src/
+│   └── supminer_hardware_checker/
+│       ├── __init__.py    # 包元数据
+│       ├── __main__.py    # python -m 入口
+│       ├── detector.py    # 硬件检测核心逻辑
+│       └── data.py        # 挖矿项目数据库
+├── pyproject.toml          # 项目元数据 & 构建配置
+├── Makefile                # 常用命令
+├── README.md
+├── CHANGELOG.md
+├── CODE_OF_CONDUCT.md
+├── CONTRIBUTING.md
+├── LICENSE                 # MIT
+└── requirements.txt
 ```
 
 ---
 
-### Q2: Windows 提示 "python 不是内部或外部命令"
+## 🔧 开发
 
-**解决方法：**
-
-你需要先安装 Python：
-
-1. 访问：https://www.python.org/downloads/
-2. 下载最新版 Python 3.x
-3. 安装时勾选 **"Add Python to PATH"**（重要！）
-4. 安装完成后重启命令提示符
-
----
-
-### Q3: macOS 提示 "command not found: python3"
-
-**解决方法：**
-
-macOS 应该自带 Python 3，如果没有：
-
-1. 安装 Homebrew：
-   ```bash
-   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-   ```
-
-2. 安装 Python 3：
-   ```bash
-   brew install python3
-   ```
-
----
-
-### Q4: 检测不到显卡
-
-**NVIDIA 显卡：**
-- 需要安装 [NVIDIA 驱动](https://www.nvidia.com/Download/index.aspx)
-
-**AMD 显卡：**
-- 确保驱动已安装
-- Linux 用户运行：`lspci | grep VGA` 确认显卡识别
-
----
-
-### Q5: 文件夹名称有空格，命令出错
-
-**解决方法：**
-
-用引号包住路径：
 ```bash
-# macOS / Linux
-cd "~/Downloads/supminer hardware checker"
+# 安装开发模式
+pip install -e .[rich]
 
-# Windows
-cd "C:\Users\用户名\Downloads\supminer hardware checker"
-```
+# 测试导入
+make test
 
-或者重命名文件夹（去掉空格）：
-```bash
-# macOS / Linux
-mv "supminer hardware checker" supminer-hardware-checker
+# 语法检查
+make lint
+
+# 清理
+make clean
 ```
 
 ---
 
-## 🔧 高级用法
+## ✅ 关于项目标准
 
-### 生成 JSON 报告
+本工具只推荐：
 
-运行脚本后，会自动生成 `hardware_report.json`，包含：
-- 完整的硬件信息
-- 详细的项目推荐
-- 矿池和交易所列表
+1. **已上线主流交易所** — Binance、OKX、Coinbase 等
+2. **大型矿池支持** — F2Pool、AntPool、币安矿池等
+3. **市值排名靠前** — 流动性充足，容易变现
+4. **长期稳定运营** — 项目成熟，社区活跃
 
-可以用文本编辑器打开查看，或者发送给我们进行分析。
-
----
-
-### 定期更新
-
-为了获取最新的项目推荐，建议定期更新：
-
-```bash
-# 进入项目目录
-cd supminer-hardware-checker
-
-# 更新代码（Git 方式）
-git pull
-
-# 或者重新下载 ZIP 压缩包
-```
+我们不推荐小众/山寨币、未上主流交易所或流动性差的项目。
 
 ---
 
-## 🌐 为什么只推荐这些项目？
+## 📞 专业服务
 
-### ✅ 我们的标准
-
-1. **上线主流交易所** - Binance、OKX、Coinbase 等
-2. **大型矿池支持** - F2Pool、AntPool、币安矿池等
-3. **市值排名靠前** - 流动性充足，容易变现
-4. **长期稳定运营** - 项目成熟，社区活跃
-
-### ❌ 我们不推荐
-
-- 小众项目、山寨币
-- 未上主流交易所的币种
-- 流动性差的项目
-- 风险高的新项目
-
-**理由：** 保护您的投资安全，确保挖到的币能轻松变现。
-
----
-
-## 💼 需要专业服务？
-
-### SupMiner 提供的服务
-
-如果你需要专业帮助，我们提供：
-
-| 服务项目 | 价格 | 说明 |
-|---------|------|------|
+| 服务 | 价格 | 说明 |
+|------|------|------|
 | 🔧 远程挖矿部署 | ¥800起 | 单台设备，包7天支持 |
-| 🔧 专业版部署 | ¥1,500起 | ≤5台设备，多矿池优化 |
 | 💡 技术咨询 | ¥300/小时 | 一对一在线咨询 |
 | 🏢 托管服务 | ¥300/台/月 | 日常监控维护 |
-| 📚 技术培训 | ¥500/课时 | 挖矿技术培训 |
-
-### 联系我们
 
 - 🌐 **官网**: https://supminer.net
 - 📧 **邮箱**: support@supminer.net
 - 💬 **Telegram**: @supminer
-- 💬 **微信**: 添加客服微信
 
 ---
 
-## 📜 免责声明
+## ⚠️ 免责声明
 
-- ⚠️ 本工具仅用于硬件检测和信息展示
-- ⚠️ 挖矿收益受市场、硬件、电费等因素影响
-- ⚠️ 加密货币投资有风险，建议充分评估后决策
-- ⚠️ 请遵守当地法律法规进行挖矿活动
-- ⚠️ 我们不销售矿机，仅提供技术服务
-
-**理性投资，谨防诈骗！**
-
----
-
-## 🎯 下一步做什么？
-
-1. ✅ **运行检测** - 了解你的硬件适合挖什么币
-2. 📚 **学习知识** - 访问 [CryptoTutorialsHub.com](https://cryptotutorialshub.com) 学习挖矿基础
-3. 💬 **咨询我们** - 有问题随时联系，免费初步咨询
-4. 🚀 **开始挖矿** - 我们帮你部署和配置
+挖矿收益受市场、硬件、电费等因素影响。加密货币投资有风险，请充分评估后决策。请遵守当地法律法规。
 
 ---
 
 ## 📄 许可证
 
-MIT License - 详见 [LICENSE](LICENSE) 文件
-
----
-
-## 🤝 反馈与贡献
-
-- 发现问题？[提交 Issue](https://github.com/weinotes/supminer-hardware-checker/issues)
-- 有改进建议？欢迎 [Pull Request](https://github.com/weinotes/supminer-hardware-checker/pulls)
-- 想要帮助？[联系我们](mailto:support@supminer.net)
-
----
-
-## 🔗 相关链接
-
-- **SupMiner 官网**: https://supminer.net
-- **CryptoTutorialsHub**: https://cryptotutorialshub.com
-- **觉照交易理论**: https://guangweiblog.com
-- **GitHub 仓库**: https://github.com/weinotes/supminer-hardware-checker
-
----
-
-## 更新日志
-
-### v2.0 - 2024-12-07
-- ✅ 更新为主流挖矿项目推荐
-- ✅ 只推荐上线主流交易所的币种
-- ✅ 只推荐主流矿池支持的项目
-- ✅ 移除小众项目（Qubic, Nexa, Nexus, Ore, Gauntlet）
-- ✅ 新增主流项目（BTC, LTC, DOGE, ETC, RVN, KAS, ERG, XMR）
-- ✅ 添加详细的矿池和交易所信息
-- ✅ 完善新手使用说明
-
-### v1.0 - 2024-12-06
-- 初始版本
-
----
-
-**感谢使用 SupMiner 硬件检测工具！** 💎
-
-如有任何问题，随时联系我们！🚀
+MIT License — 详见 [LICENSE](LICENSE)

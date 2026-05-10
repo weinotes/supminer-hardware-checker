@@ -7,6 +7,7 @@ __pycache__/
 env/
 venv/
 ENV/
+.venv/
 build/
 develop-eggs/
 dist/
@@ -23,11 +24,10 @@ wheels/
 .installed.cfg
 *.egg
 
-# 检测报告
+# Detection report (generated at runtime)
 hardware_report.json
-*.json
 
-# IDE
+# IDE / Editor
 .vscode/
 .idea/
 *.swp
@@ -35,13 +35,13 @@ hardware_report.json
 *~
 .DS_Store
 
-# 日志
+# Logs
 *.log
 
-# 测试
+# Testing
 .pytest_cache/
 .coverage
 htmlcov/
 
-# 环境变量
+# Environment
 .env
